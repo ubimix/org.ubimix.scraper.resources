@@ -34,3 +34,4 @@ Import-Package: eu.medsea.mimeutil,
  org.webreformatter.commons.uri;version="1.1.5",
  org.webreformatter.commons.uri.path;version="1.1.5",
  org.webreformatter.commons.xml;version="1.1.5"
+
