@@ -9,8 +9,10 @@ import java.util.Map;
 
 import org.webreformatter.commons.adapters.AdaptableObject;
 import org.webreformatter.commons.adapters.AdapterFactoryUtils;
+import org.webreformatter.commons.adapters.CompositeAdapterFactory;
 import org.webreformatter.commons.adapters.IAdapterFactory;
 import org.webreformatter.commons.adapters.IAdapterRegistry;
+import org.webreformatter.commons.io.IOUtil;
 import org.webreformatter.resources.IContentAdapter;
 import org.webreformatter.resources.IHierarchyAdapter;
 import org.webreformatter.resources.IPropertyAdapter;
@@ -24,6 +26,16 @@ import org.webreformatter.resources.IWrfResourceProvider;
 public class WrfResourceRepository extends AdaptableObject
     implements
     IWrfRepository {
+
+    public static IWrfRepository newRepository(File root, boolean reset) {
+        CompositeAdapterFactory adaptersFactory = new CompositeAdapterFactory();
+        if (reset) {
+            IOUtil.delete(root);
+        }
+        WrfRepositoryUtils.registerDefaultResourceAdapters(adaptersFactory);
+        IWrfRepository repo = new WrfResourceRepository(adaptersFactory, root);
+        return repo;
+    }
 
     private IAdapterRegistry fAdapterRegistry;
 

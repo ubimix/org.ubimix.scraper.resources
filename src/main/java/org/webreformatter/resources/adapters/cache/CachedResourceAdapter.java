@@ -13,14 +13,50 @@ import org.webreformatter.resources.WrfResourceAdapter;
  */
 public class CachedResourceAdapter extends WrfResourceAdapter {
 
+    private static long fExpirationTimeout = (long) DateUtil.DAY * 1;
+
+    private static long fRefreshTimeout = (long) DateUtil.MIN * 5;
+
     private static final String PROPERTY_LAST_LOADED = "Last-Loaded";
 
     private static final String PROPERTY_LAST_MODIFIED = "Last-Modified";
 
     private static final String PROPERTY_STATUS_CODE = "StatusCode";
 
+    /**
+     * Sets a new expiration timeout for the "Last-Modified" field.
+     * 
+     * @param timeout
+     */
+    public static void setExpirationTimeout(long timeout) {
+        fExpirationTimeout = timeout;
+    }
+
+    /**
+     * Sets the refresh timeout. This is the minimal timeout between two access
+     * to the remote resource.
+     * 
+     * @param MinRefreshTimeout
+     */
+    public static void setRefreshTimeout(long MinRefreshTimeout) {
+        fRefreshTimeout = MinRefreshTimeout;
+    }
+
     public CachedResourceAdapter(IWrfResource resource) {
         super(resource);
+    }
+
+    public void checkLastModified() throws IOException {
+        long lastModified = getLastModified();
+        if (lastModified < 0) {
+            long now = now();
+            setLastModified(now);
+        }
+    }
+
+    public void copyPropertiesFrom(CachedResourceAdapter from)
+        throws IOException {
+        copyPropertiesFrom(from.getResource());
     }
 
     public void copyPropertiesFrom(IPropertyAdapter from) throws IOException {
@@ -34,34 +70,26 @@ public class CachedResourceAdapter extends WrfResourceAdapter {
         copyPropertiesFrom(from);
     }
 
-    protected long getDownloadDelta() {
-        // Don't download if the resource was already downloaded
-        // less than one day ago.
-        return DateUtil.DAY * 1;
+    protected long getExpirationTimeout() {
+        return fExpirationTimeout;
     }
 
     public long getLastLoaded() throws IOException {
-        IPropertyAdapter properties = fResource
-            .getAdapter(IPropertyAdapter.class);
-        long lastModified = getTime(properties, PROPERTY_LAST_LOADED);
-        return lastModified;
+        return getTime(PROPERTY_LAST_LOADED);
     }
 
     public long getLastModified() throws IOException {
-        IPropertyAdapter properties = fResource
-            .getAdapter(IPropertyAdapter.class);
-        long lastModified = getTime(properties, PROPERTY_LAST_MODIFIED);
-        return lastModified;
+        return getTime(PROPERTY_LAST_MODIFIED);
     }
 
-    protected long getLastModifiedDelta() {
-        return (long) DateUtil.DAY * 1;
-        // return (long) DateUtil.DAY * 30;
-        // return (long) DateUtil.HOUR; // DateUtil.MIN; // DateUtil.DAY * 30;
-    }
-
-    protected long getMaxRefreshRate() {
-        return (long) DateUtil.MIN * 5;
+    /**
+     * Returns the minimal timeout between two resource downloads. This timeout
+     * is used to avoid too frequent resource downloads.
+     * 
+     * @return minimal timeout between two resource downloads
+     */
+    protected long getRefreshTimeout() {
+        return fRefreshTimeout;
     }
 
     public int getStatusCode() throws IOException {
@@ -82,6 +110,13 @@ public class CachedResourceAdapter extends WrfResourceAdapter {
         return str != null ? DateUtil.parseDate(str) : -1;
     }
 
+    private long getTime(String propertyName) throws IOException {
+        IPropertyAdapter properties = fResource
+            .getAdapter(IPropertyAdapter.class);
+        long lastModified = getTime(properties, propertyName);
+        return lastModified;
+    }
+
     public synchronized boolean isExpired() throws IOException {
         IContentAdapter content = fResource.getAdapter(IContentAdapter.class);
         boolean expired = !content.exists();
@@ -93,12 +128,12 @@ public class CachedResourceAdapter extends WrfResourceAdapter {
         if (lastModified > 0) {
             long now = now();
             long delta = now - lastModified;
-            long maxDelta = getLastModifiedDelta();
-            expired = (delta >= maxDelta);
+            long expirationTimeout = getExpirationTimeout();
+            expired = (delta >= expirationTimeout);
             if (expired) {
                 long lastLoaded = getLastLoaded();
                 delta = now - lastLoaded;
-                long refreshTimeout = getMaxRefreshRate();
+                long refreshTimeout = getRefreshTimeout();
                 expired = (delta > refreshTimeout);
             }
         }
@@ -131,9 +166,8 @@ public class CachedResourceAdapter extends WrfResourceAdapter {
         properties.setProperty(PROPERTY_STATUS_CODE, statusCode + "");
     }
 
-    public void touch() throws IOException {
+    public void updateLastLoaded() throws IOException {
         long now = now();
-        setLastModified(now);
         setLastLoaded(now);
     }
 

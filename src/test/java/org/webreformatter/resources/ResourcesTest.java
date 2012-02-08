@@ -30,7 +30,7 @@ public class ResourcesTest extends TestCase {
         File root = new File("./tmp");
         IOUtil.delete(root);
         fResourceRepository = new WrfResourceRepository(fAdapters, root);
-        WrfRepositoryUtils.registerAdapters(fResourceRepository);
+        WrfRepositoryUtils.registerDefaultResourceAdapters(fAdapters);
     }
 
     public void test() throws Exception {

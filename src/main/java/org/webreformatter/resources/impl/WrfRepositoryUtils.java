@@ -3,6 +3,9 @@
  */
 package org.webreformatter.resources.impl;
 
+import org.webreformatter.commons.adapters.AdapterFactoryUtils;
+import org.webreformatter.commons.adapters.IAdapterRegistry;
+import org.webreformatter.resources.IWrfResource;
 import org.webreformatter.resources.adapters.cache.CachedResourceAdapter;
 import org.webreformatter.resources.adapters.encoding.EncodingAdapter;
 import org.webreformatter.resources.adapters.html.HTMLAdapter;
@@ -17,15 +20,33 @@ import org.webreformatter.resources.adapters.zip.ZipAdapter;
  */
 public class WrfRepositoryUtils {
 
-    public static void registerAdapters(WrfResourceRepository repository) {
-        repository.registerResourceAdapter(CachedResourceAdapter.class);
-        repository.registerResourceAdapter(XmlAdapter.class);
-        repository.registerResourceAdapter(EncodingAdapter.class);
-        repository.registerResourceAdapter(HTMLAdapter.class);
-        repository.registerResourceAdapter(MimeTypeAdapter.class);
-        repository.registerResourceAdapter(StringAdapter.class);
-        repository.registerResourceAdapter(ImageAdapter.class);
-        repository.registerResourceAdapter(ZipAdapter.class);
+    public static void registerDefaultResourceAdapters(
+        IAdapterRegistry adapterRegistry) {
+        registerResourceAdapter(adapterRegistry, CachedResourceAdapter.class);
+        registerResourceAdapter(adapterRegistry, XmlAdapter.class);
+        registerResourceAdapter(adapterRegistry, EncodingAdapter.class);
+        registerResourceAdapter(adapterRegistry, HTMLAdapter.class);
+        registerResourceAdapter(adapterRegistry, MimeTypeAdapter.class);
+        registerResourceAdapter(adapterRegistry, StringAdapter.class);
+        registerResourceAdapter(adapterRegistry, ImageAdapter.class);
+        registerResourceAdapter(adapterRegistry, ZipAdapter.class);
+    }
+
+    public static void registerResourceAdapter(
+        IAdapterRegistry adapterRegistry,
+        Class<?> adapterType) {
+        registerResourceAdapter(adapterRegistry, adapterType, adapterType);
+    }
+
+    public static void registerResourceAdapter(
+        IAdapterRegistry adapterRegistry,
+        Class<?> adapterInterface,
+        Class<?> adapterImpl) {
+        AdapterFactoryUtils.registerAdapter(
+            adapterRegistry,
+            IWrfResource.class,
+            adapterInterface,
+            adapterImpl);
     }
 
     /**
@@ -33,5 +54,4 @@ public class WrfRepositoryUtils {
      */
     public WrfRepositoryUtils() {
     }
-
 }

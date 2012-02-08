@@ -24,11 +24,7 @@ import org.webreformatter.resources.WrfResourceAdapter;
  */
 public class ZipAdapter extends WrfResourceAdapter {
 
-    public ZipAdapter(IWrfResource instance) {
-        super(instance);
-    }
-
-    private ZipEntry writeZipEntry(
+    private static ZipEntry writeZipEntry(
         ZipOutputStream out,
         Path path,
         InputStream input) throws IOException {
@@ -45,6 +41,35 @@ public class ZipAdapter extends WrfResourceAdapter {
         }
         out.closeEntry();
         return zipEntry;
+    }
+
+    public static void zip(
+        Iterable<Map.Entry<Path, IWrfResource>> resources,
+        OutputStream output) throws IOException {
+        try {
+            ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(
+                output,
+                1024 * 10));
+            for (Map.Entry<Path, IWrfResource> entry : resources) {
+                Path path = entry.getKey();
+                IWrfResource resource = entry.getValue();
+                if (resource != null) {
+                    IContentAdapter resourceContentAdapter = resource
+                        .getAdapter(IContentAdapter.class);
+                    InputStream input = resourceContentAdapter.exists()
+                        ? resourceContentAdapter.getContentInput()
+                        : new ByteArrayInputStream(new byte[0]);
+                    writeZipEntry(out, path, input);
+                }
+            }
+            out.close();
+        } finally {
+            output.close();
+        }
+    }
+
+    public ZipAdapter(IWrfResource instance) {
+        super(instance);
     }
 
     /**
@@ -82,26 +107,7 @@ public class ZipAdapter extends WrfResourceAdapter {
         throws IOException {
         IContentAdapter content = fResource.getAdapter(IContentAdapter.class);
         OutputStream output = content.getContentOutput();
-        try {
-            ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(
-                output,
-                1024 * 10));
-            for (Map.Entry<Path, IWrfResource> entry : resources) {
-                Path path = entry.getKey();
-                IWrfResource resource = entry.getValue();
-                if (resource != null) {
-                    IContentAdapter resourceContentAdapter = resource
-                        .getAdapter(IContentAdapter.class);
-                    InputStream input = resourceContentAdapter.exists()
-                        ? resourceContentAdapter.getContentInput()
-                        : new ByteArrayInputStream(new byte[0]);
-                    writeZipEntry(out, path, input);
-                }
-            }
-            out.close();
-        } finally {
-            output.close();
-        }
+        zip(resources, output);
     }
 
 }

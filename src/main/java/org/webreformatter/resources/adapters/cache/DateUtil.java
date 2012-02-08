@@ -2,6 +2,7 @@ package org.webreformatter.resources.adapters.cache;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * This class contains utility methods used to transform dates
@@ -50,7 +51,7 @@ public class DateUtil {
         FORMATS = new SimpleDateFormat[templates.length];
         int i = 0;
         for (String template : templates) {
-            SimpleDateFormat format = new SimpleDateFormat(template);
+            SimpleDateFormat format = new SimpleDateFormat(template, Locale.US);
             FORMATS[i++] = format;
         }
     }
