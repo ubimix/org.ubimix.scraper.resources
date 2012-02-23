@@ -23,10 +23,11 @@ import org.webreformatter.server.encoding.IEncodingDetector;
  * @author kotelnikov
  */
 public class EncodingAdapter extends WrfResourceAdapter {
-
     private static Pattern CHARSET_REGEX = Pattern.compile(
         "^.*charset\\s*=\\s*([\\w\\d-]+).*$",
         Pattern.CASE_INSENSITIVE);
+
+    private static HtmlEncodingDetector fEncodingDetector = new HtmlEncodingDetector();
 
     public static IAdapterFactory getAdapterFactory() {
         final IEncodingDetector detector = new EncodingDetector();
@@ -67,14 +68,28 @@ public class EncodingAdapter extends WrfResourceAdapter {
             if (fEncoding == null) {
                 IContentAdapter content = fResource
                     .getAdapter(IContentAdapter.class);
-                InputStream input = content.getContentInput();
-                try {
-                    if (!input.markSupported()) {
-                        input = new BufferedInputStream(input);
+                if (contentType.startsWith("text/html")) {
+                    // Get the encoding from the content
+                    byte[] buf = new byte[1024 * 20];
+                    InputStream input = content.getContentInput();
+                    try {
+                        int len = input.read(buf);
+                        String str = new String(buf, 0, len);
+                        fEncoding = fEncodingDetector.detectEncoding(str);
+                    } finally {
+                        input.close();
                     }
-                    fEncoding = fDetector.getEncoding(input);
-                } finally {
-                    input.close();
+                }
+                if (fEncoding == null) {
+                    InputStream input = content.getContentInput();
+                    try {
+                        if (!input.markSupported()) {
+                            input = new BufferedInputStream(input);
+                        }
+                        fEncoding = fDetector.getEncoding(input);
+                    } finally {
+                        input.close();
+                    }
                 }
             }
         }
