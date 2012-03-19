@@ -37,7 +37,7 @@ public class PropertyAdapter extends WrfResourceAdapter
         }
         fProperties = new Properties();
         File file = getPropertiesFile();
-        if (file.exists()) {
+        if (file.exists() && file.isFile()) {
             FileInputStream input = new FileInputStream(file);
             try {
                 fProperties.load(input);
@@ -47,6 +47,7 @@ public class PropertyAdapter extends WrfResourceAdapter
         }
     }
 
+    @Override
     public synchronized Map<String, String> getProperties() throws IOException {
         checkProperties();
         Map<String, String> result = new HashMap<String, String>();
@@ -68,11 +69,13 @@ public class PropertyAdapter extends WrfResourceAdapter
     /**
      * @see org.webreformatter.resources.IWrfResource#getProperty(java.lang.String)
      */
+    @Override
     public synchronized String getProperty(final String key) throws IOException {
         checkProperties();
         return (String) fProperties.get(key);
     }
 
+    @Override
     public synchronized Set<String> getPropertyKeys() throws IOException {
         checkProperties();
         Set<String> result = new HashSet<String>();
@@ -109,6 +112,7 @@ public class PropertyAdapter extends WrfResourceAdapter
         }
     }
 
+    @Override
     public synchronized void setProperties(Map<String, String> properties)
         throws IOException {
         checkProperties();
@@ -125,6 +129,7 @@ public class PropertyAdapter extends WrfResourceAdapter
      * @see org.webreformatter.resources.IWrfResource#setProperty(java.lang.String,
      *      java.lang.String)
      */
+    @Override
     public synchronized void setProperty(final String key, final String value)
         throws IOException {
         checkProperties();

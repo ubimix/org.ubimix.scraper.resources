@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.webreformatter.commons.adapters.AdaptableObject;
+import org.webreformatter.commons.digests.Sha1Digest;
 import org.webreformatter.commons.uri.Path;
 import org.webreformatter.commons.uri.UriUtil;
 import org.webreformatter.resources.IWrfRepository;
@@ -51,10 +52,19 @@ public class WrfResourceProvider extends AdaptableObject
         return fRoot.equals(o.fRoot);
     }
 
+    /**
+     * @return the maximal length of the path.
+     */
+    protected int getMaxPathLength() {
+        return 100;
+    }
+
+    @Override
     public IWrfRepository getRepository() {
         return fRepository;
     }
 
+    @Override
     public synchronized IWrfResource getResource(Path link, boolean create) {
         IWrfResource result = null;
         WeakReference<IWrfResource> ref = fCache.get(link);
@@ -79,7 +89,14 @@ public class WrfResourceProvider extends AdaptableObject
     }
 
     public File getResourceDirectory(Path path) {
-        String escapedLink = UriUtil.toPath(path.toString());
+        String str = path.getPath(true, false);
+        int maxLen = getMaxPathLength();
+        if (str.length() > maxLen) {
+            str = str.substring(0, maxLen)
+                + "/---/"
+                + Sha1Digest.builder().update(str).build();
+        }
+        String escapedLink = UriUtil.toPath(str);
         File rootDir = getRoot();
         File file = new File(rootDir, escapedLink);
         return file;
