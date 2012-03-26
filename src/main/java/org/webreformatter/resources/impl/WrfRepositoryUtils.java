@@ -6,6 +6,7 @@ package org.webreformatter.resources.impl;
 import org.webreformatter.commons.adapters.AdapterFactoryUtils;
 import org.webreformatter.commons.adapters.IAdapterRegistry;
 import org.webreformatter.resources.IWrfResource;
+import org.webreformatter.resources.adapters.FileAdapter;
 import org.webreformatter.resources.adapters.cache.CachedResourceAdapter;
 import org.webreformatter.resources.adapters.encoding.EncodingAdapter;
 import org.webreformatter.resources.adapters.html.HTMLAdapter;
@@ -23,6 +24,7 @@ public class WrfRepositoryUtils {
     public static void registerDefaultResourceAdapters(
         IAdapterRegistry adapterRegistry) {
         registerResourceAdapter(adapterRegistry, CachedResourceAdapter.class);
+        registerResourceAdapter(adapterRegistry, FileAdapter.class);
         registerResourceAdapter(adapterRegistry, XmlAdapter.class);
         registerResourceAdapter(adapterRegistry, EncodingAdapter.class);
         registerResourceAdapter(adapterRegistry, HTMLAdapter.class);

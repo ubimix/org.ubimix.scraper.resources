@@ -97,9 +97,11 @@ public class CachedResourceAdapter extends WrfResourceAdapter {
             .getAdapter(IPropertyAdapter.class);
         String statusCode = properties.getProperty(PROPERTY_STATUS_CODE);
         int code = 500;
-        try {
-            code = Integer.parseInt(statusCode.trim());
-        } catch (Exception e) {
+        if (statusCode != null) {
+            try {
+                code = Integer.parseInt(statusCode.trim());
+            } catch (Exception e) {
+            }
         }
         return code;
     }
