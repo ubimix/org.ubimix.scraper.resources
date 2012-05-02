@@ -32,6 +32,7 @@ public class EncodingAdapter extends WrfResourceAdapter {
     public static IAdapterFactory getAdapterFactory() {
         final IEncodingDetector detector = new EncodingDetector();
         return new IAdapterFactory() {
+            @Override
             @SuppressWarnings("unchecked")
             public <T> T getAdapter(Object instance, Class<T> type) {
                 if (!(instance instanceof IWrfResource)
@@ -70,7 +71,7 @@ public class EncodingAdapter extends WrfResourceAdapter {
                     .getAdapter(IContentAdapter.class);
                 if (contentType.startsWith("text/html")) {
                     // Get the encoding from the content
-                    byte[] buf = new byte[1024 * 20];
+                    byte[] buf = new byte[1024 * 100];
                     InputStream input = content.getContentInput();
                     try {
                         int len = input.read(buf);
