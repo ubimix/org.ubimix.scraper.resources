@@ -26,6 +26,7 @@ public class MimeTypeAdapter extends WrfResourceAdapter {
     public static IAdapterFactory getAdapterFactory() {
         final IMimeTypeDetector detector = new ExtendedMimeTypeDetector();
         return new IAdapterFactory() {
+            @Override
             @SuppressWarnings("unchecked")
             public <T> T getAdapter(Object instance, Class<T> type) {
                 if (!(instance instanceof IWrfResource)

@@ -27,10 +27,43 @@ public class ContentAdapter extends WrfResourceAdapter
         void unlock();
     }
 
+    private static long fReadLockCounter;
+
+    private static long fReadUnlockCounter;
+
+    private static long fWriteLockCounter;
+
+    private static long fWriteUnlockCounter;
+
+    public static long getReadLockCounter() {
+        synchronized (ContentAdapter.class) {
+            return fReadLockCounter;
+        }
+    }
+
+    public static long getReadUnlockCounter() {
+        synchronized (ContentAdapter.class) {
+            return fReadUnlockCounter;
+        }
+    }
+
+    public static long getWriteLockCounter() {
+        synchronized (ContentAdapter.class) {
+            return fWriteLockCounter;
+        }
+    }
+
+    public static long getWriteUnlockCounter() {
+        synchronized (ContentAdapter.class) {
+            return fWriteUnlockCounter;
+        }
+    }
+
     public ContentAdapter(WrfResource instance) {
         super(instance);
     }
 
+    @Override
     public void delete() throws IOException {
         IFileLock lock = lock(true);
         try {
@@ -44,6 +77,7 @@ public class ContentAdapter extends WrfResourceAdapter
     /**
      * @see org.webreformatter.resources.IWrfResource#exists()
      */
+    @Override
     public synchronized boolean exists() {
         File file = getResourceFile();
         return file.exists();
@@ -52,6 +86,7 @@ public class ContentAdapter extends WrfResourceAdapter
     /**
      * @see org.webreformatter.resources.IWrfResource#getContentInput()
      */
+    @Override
     public synchronized InputStream getContentInput() throws IOException {
         // FIXME: set the lock/unlock in the close method
         final IFileLock lock = lock(false);
@@ -71,6 +106,7 @@ public class ContentAdapter extends WrfResourceAdapter
     /**
      * @see org.webreformatter.resources.IWrfResource#getContentOutput()
      */
+    @Override
     public synchronized OutputStream getContentOutput() throws IOException {
         boolean ok = false;
         final IFileLock lock = lock(true);
@@ -99,6 +135,7 @@ public class ContentAdapter extends WrfResourceAdapter
     /**
      * @see org.webreformatter.resources.IWrfResource#getLastModified()
      */
+    @Override
     public long getLastModified() {
         File file = getResourceFile();
         return file.exists() ? file.lastModified() : -1;
@@ -115,15 +152,37 @@ public class ContentAdapter extends WrfResourceAdapter
     }
 
     private IFileLock lock(final boolean writeLock) {
+        synchronized (ContentAdapter.class) {
+            if (writeLock) {
+                fWriteLockCounter++;
+            } else {
+                fReadLockCounter++;
+            }
+        }
         return new IFileLock() {
+            private boolean fUnlocked;
+
+            @Override
             public File getFile() {
                 final File file = getResourceFile();
                 return file;
             }
 
+            @Override
             public void unlock() {
+                if (fUnlocked) {
+                    return;
+                }
+                fUnlocked = true;
                 if (writeLock) {
+                    synchronized (ContentAdapter.class) {
+                        fWriteUnlockCounter++;
+                    }
                     fResource.notifyAdapters(new ContentChangeEvent());
+                } else {
+                    synchronized (ContentAdapter.class) {
+                        fReadUnlockCounter++;
+                    }
                 }
             }
         };
@@ -141,6 +200,7 @@ public class ContentAdapter extends WrfResourceAdapter
     /**
      * @see org.webreformatter.resources.IWrfResource#writeContent(java.io.InputStream)
      */
+    @Override
     public synchronized void writeContent(final InputStream input)
         throws IOException {
         try {

@@ -59,6 +59,7 @@ public class WrfResourceRepository extends AdaptableObject
         this(adapters, adapters, root);
     }
 
+    @Override
     public IWrfResourceProvider getResourceProvider(String key, boolean create) {
         synchronized (fCache) {
             IWrfResourceProvider provider = fCache.get(key);

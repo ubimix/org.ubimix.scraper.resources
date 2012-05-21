@@ -31,13 +31,15 @@ public class ExtendedMimeTypeDetector implements IMimeTypeDetector {
     public ExtendedMimeTypeDetector() {
         registerMimeDetectors(
             "eu.medsea.mimeutil.detector.MagicMimeMimeDetector",
-            "eu.medsea.mimeutil.detector.ExtensionMimeDetector",
-            "eu.medsea.mimeutil.detector.OpendesktopMimeDetector");
+            "eu.medsea.mimeutil.detector.ExtensionMimeDetector"
+        // ,"eu.medsea.mimeutil.detector.OpendesktopMimeDetector"
+        );
         TextMimeDetector.registerTextMimeHandler(new TextMimeHandler() {
             private int _OPTIONS = Pattern.DOTALL
                 | Pattern.CASE_INSENSITIVE
                 | Pattern.MULTILINE;
 
+            @Override
             public boolean handle(TextMimeType mimeType, String content) {
                 boolean result = false;
                 if (content.indexOf("<html") >= 0
@@ -56,6 +58,54 @@ public class ExtendedMimeTypeDetector implements IMimeTypeDetector {
                         String str = matcher.group(1);
                         matcher = REGEXP_CHARSET.matcher(str);
                         if (matcher.matches()) {
+                            TextMimeDetector
+                                .registerTextMimeHandler(new TextMimeHandler() {
+                                    private int _OPTIONS = Pattern.DOTALL
+                                        | Pattern.CASE_INSENSITIVE
+                                        | Pattern.MULTILINE;
+
+                                    @Override
+                                    public boolean handle(
+                                        TextMimeType mimeType,
+                                        String content) {
+                                        boolean result = false;
+                                        if (content.indexOf("<html") >= 0
+                                            || content.indexOf("<HTML") >= 0) {
+                                            mimeType.setSubType("html");
+
+                                            Pattern REGEXP_CHARSET = Pattern
+                                                .compile(
+                                                    "^.*charset\\s*=\\s*([^'\"]*).*$",
+                                                    _OPTIONS);
+
+                                            Pattern REGEXP_META = Pattern
+                                                .compile(
+                                                    "^.*<meta.+http\\-equiv(.*)>.*$",
+                                                    _OPTIONS);
+                                            Matcher matcher = REGEXP_META
+                                                .matcher(content);
+                                            if (matcher.matches()) {
+                                                String str = matcher.group(1);
+                                                matcher = REGEXP_CHARSET
+                                                    .matcher(str);
+                                                if (matcher.matches()) {
+                                                    str = matcher.group(1);
+                                                    str = str.trim();
+                                                    if (!"".equals(str)) {
+                                                        mimeType
+                                                            .setEncoding(str);
+                                                    }
+                                                }
+                                                mimeType.setSubType("html");
+                                                result = true;
+                                            }
+
+                                            result = true;
+                                        }
+                                        return result;
+                                    }
+                                });
+
                             str = matcher.group(1);
                             str = str.trim();
                             if (!"".equals(str)) {
@@ -76,6 +126,7 @@ public class ExtendedMimeTypeDetector implements IMimeTypeDetector {
     /**
      * @see org.webreformatter.server.mime.IMimeTypeDetector#getMimeType(java.io.InputStream)
      */
+    @Override
     @SuppressWarnings("unchecked")
     public String getMimeType(InputStream input) throws IOException {
         Collection<MimeType> types = mimeUtil.getMimeTypes(input);
@@ -85,6 +136,7 @@ public class ExtendedMimeTypeDetector implements IMimeTypeDetector {
     /**
      * @see org.webreformatter.server.mime.IMimeTypeDetector#getMimeTypeByExtension(java.lang.String)
      */
+    @Override
     @SuppressWarnings("unchecked")
     public String getMimeTypeByExtension(String fileName) {
         Collection<MimeType> types = mimeUtil.getMimeTypes(fileName);
