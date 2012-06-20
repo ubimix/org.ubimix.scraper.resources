@@ -14,12 +14,12 @@ import org.webreformatter.commons.xml.XmlWrapper;
 import org.webreformatter.resources.IContentAdapter;
 import org.webreformatter.resources.IWrfResource;
 import org.webreformatter.resources.adapters.encoding.EncodingAdapter;
-import org.webreformatter.resources.adapters.xml.AbstractXmlAdapter;
+import org.webreformatter.resources.adapters.xml.XmlAdapter;
 
 /**
  * @author kotelnikov
  */
-public class HTMLAdapter extends AbstractXmlAdapter {
+public class HTMLAdapter extends XmlAdapter {
 
     public HTMLAdapter(IWrfResource instance) {
         super(instance);
@@ -38,7 +38,8 @@ public class HTMLAdapter extends AbstractXmlAdapter {
         try {
             Reader reader = new InputStreamReader(input, encoding);
             try {
-                return HTMLUtils.cleanupHTML(reader);
+                XmlWrapper wrapper = HTMLUtils.getXmlWrapper(reader);
+                return wrapper.getDocument();
             } catch (Exception e) {
                 throw XmlWrapper.handleError(
                     "Can not clean up the underlying HTML document.",

@@ -5,15 +5,11 @@ package org.webreformatter.resources.adapters.xml;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
 
-import org.w3c.dom.Document;
 import org.webreformatter.commons.xml.XmlException;
 import org.webreformatter.commons.xml.XmlWrapper;
-import org.webreformatter.commons.xml.XmlWrapper.CompositeNamespaceContext;
-import org.webreformatter.commons.xml.XmlWrapper.ElementBasedNamespaceContext;
-import org.webreformatter.commons.xml.XmlWrapper.XmlContext;
 import org.webreformatter.resources.IContentAdapter;
-import org.webreformatter.resources.IContentAdapter.ContentChangeEvent;
 import org.webreformatter.resources.IWrfResource;
 import org.webreformatter.resources.WrfResourceAdapter;
 
@@ -22,15 +18,7 @@ import org.webreformatter.resources.WrfResourceAdapter;
  */
 public abstract class AbstractXmlAdapter extends WrfResourceAdapter {
 
-    private CompositeNamespaceContext fNamespaceContext = new CompositeNamespaceContext();
-
-    private ElementBasedNamespaceContext fNamespaceElementContext;
-
-    private XmlWrapper fWrapper;
-
-    private XmlContext fXmlContext = XmlContext
-        .builder(fNamespaceContext)
-        .build();
+    private WeakReference<XmlWrapper> fWrapper;
 
     public AbstractXmlAdapter(IWrfResource resource) {
         super(resource);
@@ -68,16 +56,17 @@ public abstract class AbstractXmlAdapter extends WrfResourceAdapter {
         }
     }
 
+    protected void clearWrapper() {
+        fWrapper = null;
+    }
+
     public XmlWrapper getWrapper() throws IOException, XmlException {
-        if (fWrapper == null) {
-            Document doc = readDocument();
-            if (doc != null) {
-                updateDocumentNamespaceContext(doc);
-                XmlContext context = getXmlContext();
-                fWrapper = new XmlWrapper(doc, context);
-            }
+        XmlWrapper result = fWrapper != null ? fWrapper.get() : null;
+        if (result == null) {
+            result = readWrapper();
+            fWrapper = new WeakReference<XmlWrapper>(result);
         }
-        return fWrapper;
+        return result;
     }
 
     public <T extends XmlWrapper> T getWrapper(Class<T> type)
@@ -87,24 +76,9 @@ public abstract class AbstractXmlAdapter extends WrfResourceAdapter {
         return wrapper != null ? wrapper.to(type) : null;
     }
 
-    public XmlContext getXmlContext() {
-        return fXmlContext;
-    }
-
-    /**
-     * @see org.webreformatter.resources.WrfResourceAdapter#handleEvent(java.lang.Object)
-     */
-    @Override
-    public void handleEvent(Object event) {
-        synchronized (this) {
-            if (event instanceof ContentChangeEvent) {
-                updateDocumentNamespaceContext(null);
-                fWrapper = null;
-            }
-        }
-    }
-
-    protected abstract Document readDocument() throws IOException, XmlException;
+    protected abstract XmlWrapper readWrapper()
+        throws IOException,
+        XmlException;
 
     public void setDocument(XmlWrapper doc) throws IOException, XmlException {
         IContentAdapter content = fResource.getAdapter(IContentAdapter.class);
@@ -114,18 +88,7 @@ public abstract class AbstractXmlAdapter extends WrfResourceAdapter {
         } finally {
             output.close();
         }
-        fWrapper = null;
-    }
-
-    public void updateDocumentNamespaceContext(Document doc) {
-        if (fNamespaceElementContext != null) {
-            fNamespaceContext.removeContext(fNamespaceElementContext);
-            fNamespaceElementContext = null;
-        }
-        if (doc != null) {
-            fNamespaceElementContext = new ElementBasedNamespaceContext(doc);
-            fNamespaceContext.addContext(fNamespaceElementContext);
-        }
+        clearWrapper();
     }
 
 }
