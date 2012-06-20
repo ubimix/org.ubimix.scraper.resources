@@ -21,30 +21,52 @@ import org.webreformatter.resources.WrfResourceAdapter;
  */
 public class ZipAdapter extends WrfResourceAdapter {
 
+    private static void addToZip(
+        ZipBuilder builder,
+        Iterable<Map.Entry<Path, IWrfResource>> entries,
+        boolean pack) throws IOException {
+        if (entries == null) {
+            return;
+        }
+        for (Map.Entry<Path, IWrfResource> entry : entries) {
+            Path path = entry.getKey();
+            IWrfResource resource = entry.getValue();
+            if (resource != null) {
+                IContentAdapter resourceContentAdapter = resource
+                    .getAdapter(IContentAdapter.class);
+                InputStream input = resourceContentAdapter.exists()
+                    ? resourceContentAdapter.getContentInput()
+                    : new ByteArrayInputStream(new byte[0]);
+                if (pack) {
+                    builder.addEntry(path.toString(), input);
+                } else {
+                    builder.addStoredEntry(path.toString(), input);
+                }
+            }
+        }
+    }
+
     public static void zip(
-        Iterable<Map.Entry<Path, IWrfResource>> resources,
+        Iterable<Map.Entry<Path, IWrfResource>> storedResources,
+        Iterable<Map.Entry<Path, IWrfResource>> packedResources,
         OutputStream output) throws IOException {
         try {
             ZipBuilder builder = new ZipBuilder(output);
             try {
-                for (Map.Entry<Path, IWrfResource> entry : resources) {
-                    Path path = entry.getKey();
-                    IWrfResource resource = entry.getValue();
-                    if (resource != null) {
-                        IContentAdapter resourceContentAdapter = resource
-                            .getAdapter(IContentAdapter.class);
-                        InputStream input = resourceContentAdapter.exists()
-                            ? resourceContentAdapter.getContentInput()
-                            : new ByteArrayInputStream(new byte[0]);
-                        builder.addEntry(path.toString(), input);
-                    }
-                }
+                addToZip(builder, storedResources, false);
+                addToZip(builder, packedResources, true);
             } finally {
                 builder.close();
             }
         } finally {
             output.close();
         }
+    }
+
+    public static void zip(
+        Iterable<Map.Entry<Path, IWrfResource>> resources,
+        OutputStream output) throws IOException {
+        zip(null, resources, output);
     }
 
     public ZipAdapter(IWrfResource instance) {
