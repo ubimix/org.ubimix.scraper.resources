@@ -78,7 +78,7 @@ public class ContentAdapter extends WrfResourceAdapter
      * @see org.webreformatter.resources.IWrfResource#exists()
      */
     @Override
-    public synchronized boolean exists() {
+    public boolean exists() {
         File file = getResourceFile();
         return file.exists();
     }
@@ -87,7 +87,7 @@ public class ContentAdapter extends WrfResourceAdapter
      * @see org.webreformatter.resources.IWrfResource#getContentInput()
      */
     @Override
-    public synchronized InputStream getContentInput() throws IOException {
+    public InputStream getContentInput() throws IOException {
         // FIXME: set the lock/unlock in the close method
         final IFileLock lock = lock(false);
         File file = lock.getFile();
@@ -107,7 +107,7 @@ public class ContentAdapter extends WrfResourceAdapter
      * @see org.webreformatter.resources.IWrfResource#getContentOutput()
      */
     @Override
-    public synchronized OutputStream getContentOutput() throws IOException {
+    public OutputStream getContentOutput() throws IOException {
         boolean ok = false;
         final IFileLock lock = lock(true);
         try {
@@ -146,7 +146,7 @@ public class ContentAdapter extends WrfResourceAdapter
         return (WrfResource) super.getResource();
     }
 
-    private File getResourceFile() {
+    private synchronized File getResourceFile() {
         File file = getResource().getResourceFile("data.bin");
         return file;
     }
@@ -201,8 +201,7 @@ public class ContentAdapter extends WrfResourceAdapter
      * @see org.webreformatter.resources.IWrfResource#writeContent(java.io.InputStream)
      */
     @Override
-    public synchronized void writeContent(final InputStream input)
-        throws IOException {
+    public void writeContent(final InputStream input) throws IOException {
         try {
             fResource.notifyAdapters(new ContentChangeEvent());
             OutputStream out = getContentOutput();
