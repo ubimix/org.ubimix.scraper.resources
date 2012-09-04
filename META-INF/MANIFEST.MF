@@ -1,25 +1,25 @@
 Manifest-Version: 1.0
 Bundle-ClassPath: .
-Bundle-SymbolicName: org.webreformatter.scrapper.resources
-Bundle-Name: org.webreformatter.scrapper.resources
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Bundle-Version: 0.9.0
+Bundle-SymbolicName: org.ubimix.scrapper.resources
+Bundle-Name: org.ubimix.scrapper.resources
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-Version: 1.2.1
 Bundle-ManifestVersion: 2
 Bundle-Description: Persistent resources management library
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0
-Export-Package: org.webreformatter.resources;version="0.9.0",
- org.webreformatter.resources.adapters;version="0.9.0",
- org.webreformatter.resources.adapters.cache;version="0.9.0",
- org.webreformatter.resources.adapters.encoding;version="0.9.0",
- org.webreformatter.resources.adapters.html;version="0.9.0",
- org.webreformatter.resources.adapters.images;version="0.9.0",
- org.webreformatter.resources.adapters.mime;version="0.9.0",
- org.webreformatter.resources.adapters.string;version="0.9.0",
- org.webreformatter.resources.adapters.xml;version="0.9.0",
- org.webreformatter.resources.adapters.zip;version="0.9.0",
- org.webreformatter.resources.impl;version="0.9.0",
- org.webreformatter.server.encoding;version="0.9.0",
- org.webreformatter.server.mime;version="0.9.0"
+Export-Package: org.ubimix.resources;version="1.2.1",
+ org.ubimix.resources.adapters;version="1.2.1",
+ org.ubimix.resources.adapters.cache;version="1.2.1",
+ org.ubimix.resources.adapters.encoding;version="1.2.1",
+ org.ubimix.resources.adapters.html;version="1.2.1",
+ org.ubimix.resources.adapters.images;version="1.2.1",
+ org.ubimix.resources.adapters.mime;version="1.2.1",
+ org.ubimix.resources.adapters.string;version="1.2.1",
+ org.ubimix.resources.adapters.xml;version="1.2.1",
+ org.ubimix.resources.adapters.zip;version="1.2.1",
+ org.ubimix.resources.impl;version="1.2.1",
+ org.ubimix.server.encoding;version="1.2.1",
+ org.ubimix.server.mime;version="1.2.1"
 Import-Package: eu.medsea.mimeutil;resolution:=optional,
  eu.medsea.mimeutil.detector;resolution:=optional,
  eu.medsea.mimeutil.handler;resolution:=optional,
@@ -27,12 +27,12 @@ Import-Package: eu.medsea.mimeutil;resolution:=optional,
  javax.imageio;resolution:=optional,
  javax.imageio.stream;resolution:=optional,
  javax.xml.namespace;resolution:=optional,
- org.htmlcleaner;version="2.2.0",
+ org.htmlcleaner;version="2.2.0";resolution:=optional,
  org.w3c.dom;resolution:=optional,
- org.webreformatter.commons.adapters,
- org.webreformatter.commons.digests;version="1.1.5",
- org.webreformatter.commons.io;version="1.1.5",
- org.webreformatter.commons.uri;version="1.1.5",
- org.webreformatter.commons.uri.path;version="1.1.5",
- org.webreformatter.commons.xml;version="1.1.5"
+ org.ubimix.commons.adapters;version="1.2.1",
+ org.ubimix.commons.digests;version="1.2.1",
+ org.ubimix.commons.io;version="1.2.1",
+ org.ubimix.commons.uri;version="1.2.1",
+ org.ubimix.commons.uri.path;version="1.2.1",
+ org.ubimix.commons.xml;version="1.2.1"
 
