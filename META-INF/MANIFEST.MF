@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ClassPath: .
-Bundle-SymbolicName: org.ubimix.scrapper.resources
-Bundle-Name: org.ubimix.scrapper.resources
+Bundle-SymbolicName: org.ubimix.scraper.resources
+Bundle-Name: org.ubimix.scraper.resources
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Version: 1.2.1
 Bundle-ManifestVersion: 2
