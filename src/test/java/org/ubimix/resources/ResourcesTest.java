@@ -11,6 +11,9 @@ import org.ubimix.commons.io.IOUtil;
 import org.ubimix.commons.uri.Path;
 import org.ubimix.commons.uri.Uri;
 import org.ubimix.commons.uri.UriToPath;
+import org.ubimix.model.xml.XmlElement;
+import org.ubimix.resources.adapters.model.ModelAdapter;
+import org.ubimix.resources.adapters.string.StringAdapter;
 import org.ubimix.resources.impl.WrfRepositoryUtils;
 import org.ubimix.resources.impl.WrfResourceRepository;
 
@@ -69,5 +72,22 @@ public class ResourcesTest extends TestCase {
         properties.setProperty("test", "ABC");
         String value = properties.getProperty("test");
         assertEquals("ABC", value);
+    }
+
+    public void testModelResourceAdapter() throws IOException {
+        Path path = new Path("/abc.txt");
+        IWrfResourceProvider resourceProvider = fResourceRepository
+            .getResourceProvider("test", true);
+        IWrfResource resource = resourceProvider.getResource(path, true);
+        resource.getAdapter(StringAdapter.class).setContentAsString(
+            "<h1>Title<p>Para<li>item1<li>item2");
+        ModelAdapter modelAdapter = resource.getAdapter(ModelAdapter.class);
+        XmlElement e = modelAdapter.readHtml();
+        assertEquals("<html><body>"
+            + "<h1>Title</h1>"
+            + "<p>Para</p>"
+            + "<ul><li>item1</li><li>item2</li></ul>"
+            + "</body>"
+            + "</html>", e.toString());
     }
 }

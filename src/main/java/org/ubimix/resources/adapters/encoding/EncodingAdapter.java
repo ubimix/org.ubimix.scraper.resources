@@ -29,7 +29,7 @@ public class EncodingAdapter extends WrfResourceAdapter {
 
     private static HtmlEncodingDetector fEncodingDetector = new HtmlEncodingDetector();
 
-    public static IAdapterFactory getAdapterFactory() {
+    public static synchronized IAdapterFactory getAdapterFactory() {
         final IEncodingDetector detector = new EncodingDetector();
         return new IAdapterFactory() {
             @Override
@@ -69,7 +69,7 @@ public class EncodingAdapter extends WrfResourceAdapter {
             if (fEncoding == null) {
                 IContentAdapter content = fResource
                     .getAdapter(IContentAdapter.class);
-                if (contentType.startsWith("text/html")) {
+                if (contentType != null && contentType.startsWith("text/html")) {
                     // Get the encoding from the content
                     byte[] buf = new byte[1024 * 100];
                     InputStream input = content.getContentInput();

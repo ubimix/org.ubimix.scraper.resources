@@ -11,7 +11,6 @@ import java.io.OutputStream;
 
 import org.ubimix.commons.uri.Path;
 import org.ubimix.resources.IContentAdapter;
-import org.ubimix.resources.IContentAdapter.ContentChangeEvent;
 import org.ubimix.resources.IWrfResource;
 import org.ubimix.resources.WrfResourceAdapter;
 import org.ubimix.resources.adapters.images.ImageResizeStrategy.Format;
@@ -26,27 +25,24 @@ public class ImageAdapter extends WrfResourceAdapter {
 
     private static ImageResizer fResizer = new ImageResizer();
 
-    private BufferedImage fImage;
-
     public ImageAdapter(IWrfResource instance) {
         super(instance);
     }
 
     public BufferedImage getImage() throws IOException {
         synchronized (getMutex()) {
-            if (fImage == null) {
-                IContentAdapter contentAdapter = fResource
-                    .getAdapter(IContentAdapter.class);
-                if (contentAdapter.exists()) {
-                    InputStream input = contentAdapter.getContentInput();
-                    try {
-                        fImage = ImageResizer.readImage(input);
-                    } finally {
-                        input.close();
-                    }
+            BufferedImage image = null;
+            IContentAdapter contentAdapter = fResource
+                .getAdapter(IContentAdapter.class);
+            if (contentAdapter.exists()) {
+                InputStream input = contentAdapter.getContentInput();
+                try {
+                    image = ImageResizer.readImage(input);
+                } finally {
+                    input.close();
                 }
             }
-            return fImage;
+            return image;
         }
     }
 
@@ -79,15 +75,6 @@ public class ImageAdapter extends WrfResourceAdapter {
 
     protected Object getMutex() {
         return this;
-    }
-
-    @Override
-    public void handleEvent(Object event) {
-        synchronized (getMutex()) {
-            if (event instanceof ContentChangeEvent) {
-                fImage = null;
-            }
-        }
     }
 
     public void resizeImage(
@@ -201,9 +188,6 @@ public class ImageAdapter extends WrfResourceAdapter {
             ImageResizer.writeImage(resizedImage, output, format);
         } finally {
             output.close();
-        }
-        synchronized (getMutex()) {
-            fImage = resizedImage;
         }
     }
 

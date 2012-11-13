@@ -15,6 +15,12 @@
     <dependencies>
         <dependency>
             <groupId>org.ubimix.commons</groupId>
+            <artifactId>org.ubimix.commons.model</artifactId>
+            <version>0.1.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ubimix.commons</groupId>
             <artifactId>org.ubimix.commons.uri</artifactId>
             <version>1.2.1</version>
         </dependency>

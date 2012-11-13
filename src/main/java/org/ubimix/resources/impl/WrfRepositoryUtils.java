@@ -12,6 +12,7 @@ import org.ubimix.resources.adapters.encoding.EncodingAdapter;
 import org.ubimix.resources.adapters.html.HTMLAdapter;
 import org.ubimix.resources.adapters.images.ImageAdapter;
 import org.ubimix.resources.adapters.mime.MimeTypeAdapter;
+import org.ubimix.resources.adapters.model.ModelAdapter;
 import org.ubimix.resources.adapters.string.StringAdapter;
 import org.ubimix.resources.adapters.xml.XmlAdapter;
 import org.ubimix.resources.adapters.zip.ZipAdapter;
@@ -32,6 +33,7 @@ public class WrfRepositoryUtils {
         registerResourceAdapter(adapterRegistry, StringAdapter.class);
         registerResourceAdapter(adapterRegistry, ImageAdapter.class);
         registerResourceAdapter(adapterRegistry, ZipAdapter.class);
+        registerResourceAdapter(adapterRegistry, ModelAdapter.class);
     }
 
     public static void registerResourceAdapter(
