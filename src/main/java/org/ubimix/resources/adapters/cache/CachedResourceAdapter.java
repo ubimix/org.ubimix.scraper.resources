@@ -93,10 +93,14 @@ public class CachedResourceAdapter extends WrfResourceAdapter {
     }
 
     public int getStatusCode() throws IOException {
+        return getStatusCode(500);
+    }
+
+    public int getStatusCode(int defaultValue) throws IOException {
         IPropertyAdapter properties = fResource
             .getAdapter(IPropertyAdapter.class);
         String statusCode = properties.getProperty(PROPERTY_STATUS_CODE);
-        int code = 500;
+        int code = defaultValue;
         if (statusCode != null) {
             try {
                 code = Integer.parseInt(statusCode.trim());
