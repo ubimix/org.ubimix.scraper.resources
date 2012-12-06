@@ -21,8 +21,8 @@ import org.ubimix.commons.parser.xml.IXmlParser;
 import org.ubimix.commons.parser.xml.XmlParser;
 import org.ubimix.model.IValueFactory;
 import org.ubimix.model.ModelObject;
+import org.ubimix.model.xml.IXmlElement;
 import org.ubimix.model.xml.XmlBuilder;
-import org.ubimix.model.xml.XmlElement;
 import org.ubimix.resources.IContentAdapter;
 import org.ubimix.resources.IWrfResource;
 import org.ubimix.resources.WrfResourceAdapter;
@@ -99,12 +99,12 @@ public class ModelAdapter extends WrfResourceAdapter {
 
     /**
      * Interprets the stored resource as an HTML document and returns the
-     * {@link XmlElement} corresponding to this document.
+     * {@link IXmlElement} corresponding to this document.
      * 
      * @return a root element of the XML document
      * @throws IOException
      */
-    public XmlElement readHtml() throws IOException {
+    public IXmlElement readHtml() throws IOException {
         IXmlParser parser = getHtmlParser();
         return readXml(parser);
     }
@@ -131,17 +131,17 @@ public class ModelAdapter extends WrfResourceAdapter {
 
     /**
      * Interprets the stored resource as an XML document and returns the
-     * {@link XmlElement} corresponding to this document.
+     * {@link IXmlElement} corresponding to this document.
      * 
      * @return a root element of the XML document
      * @throws IOException
      */
-    public XmlElement readXml() throws IOException {
+    public IXmlElement readXml() throws IOException {
         IXmlParser parser = getXmlParser();
         return readXml(parser);
     }
 
-    private XmlElement readXml(IXmlParser parser)
+    private IXmlElement readXml(IXmlParser parser)
         throws IOException,
         UnsupportedEncodingException {
         Reader reader = getReader();
@@ -149,7 +149,7 @@ public class ModelAdapter extends WrfResourceAdapter {
             XmlBuilder builder = new XmlBuilder();
             ICharStream stream = getCharStream(reader);
             parser.parse(stream, builder);
-            XmlElement result = builder.getResult();
+            IXmlElement result = builder.getResult();
             return result;
         } finally {
             reader.close();

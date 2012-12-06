@@ -11,7 +11,7 @@ import org.ubimix.commons.io.IOUtil;
 import org.ubimix.commons.uri.Path;
 import org.ubimix.commons.uri.Uri;
 import org.ubimix.commons.uri.UriToPath;
-import org.ubimix.model.xml.XmlElement;
+import org.ubimix.model.xml.IXmlElement;
 import org.ubimix.resources.adapters.model.ModelAdapter;
 import org.ubimix.resources.adapters.string.StringAdapter;
 import org.ubimix.resources.impl.WrfRepositoryUtils;
@@ -82,7 +82,7 @@ public class ResourcesTest extends TestCase {
         resource.getAdapter(StringAdapter.class).setContentAsString(
             "<h1>Title<p>Para<li>item1<li>item2");
         ModelAdapter modelAdapter = resource.getAdapter(ModelAdapter.class);
-        XmlElement e = modelAdapter.readHtml();
+        IXmlElement e = modelAdapter.readHtml();
         assertEquals("<html><body>"
             + "<h1>Title</h1>"
             + "<p>Para</p>"
