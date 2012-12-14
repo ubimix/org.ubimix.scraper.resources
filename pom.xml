@@ -9,7 +9,7 @@
     </parent>
     <groupId>org.ubimix.scraper</groupId>
     <artifactId>org.ubimix.scraper.resources</artifactId>
-    <version>1.2.1</version>
+    <version>1.3.0</version>
     <packaging>bundle</packaging>
     <name>${project.artifactId}</name>
     <dependencies>
@@ -18,7 +18,6 @@
             <artifactId>org.ubimix.commons.model</artifactId>
             <version>0.1.4</version>
         </dependency>
-
         <dependency>
             <groupId>org.ubimix.commons</groupId>
             <artifactId>org.ubimix.commons.uri</artifactId>

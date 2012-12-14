@@ -3,23 +3,22 @@ Bundle-ClassPath: .
 Bundle-SymbolicName: org.ubimix.scraper.resources
 Bundle-Name: org.ubimix.scraper.resources
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-Version: 1.2.1
+Bundle-Version: 1.3.0
 Bundle-ManifestVersion: 2
 Bundle-Description: Persistent resources management library
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0
-Export-Package: org.ubimix.resources;version="1.2.1",
- org.ubimix.resources.adapters;version="1.2.1",
- org.ubimix.resources.adapters.cache;version="1.2.1",
- org.ubimix.resources.adapters.encoding;version="1.2.1",
- org.ubimix.resources.adapters.html;version="1.2.1",
- org.ubimix.resources.adapters.images;version="1.2.1",
- org.ubimix.resources.adapters.mime;version="1.2.1",
- org.ubimix.resources.adapters.string;version="1.2.1",
- org.ubimix.resources.adapters.xml;version="1.2.1",
- org.ubimix.resources.adapters.zip;version="1.2.1",
- org.ubimix.resources.impl;version="1.2.1",
- org.ubimix.server.encoding;version="1.2.1",
- org.ubimix.server.mime;version="1.2.1"
+Export-Package: org.ubimix.resources;version="1.3.0",
+ org.ubimix.resources.adapters;version="1.3.0",
+ org.ubimix.resources.adapters.cache;version="1.3.0",
+ org.ubimix.resources.adapters.encoding;version="1.3.0",
+ org.ubimix.resources.adapters.images;version="1.3.0",
+ org.ubimix.resources.adapters.mime;version="1.3.0",
+ org.ubimix.resources.adapters.model;version="1.3.0",
+ org.ubimix.resources.adapters.string;version="1.3.0",
+ org.ubimix.resources.adapters.zip;version="1.3.0",
+ org.ubimix.resources.impl;version="1.3.0",
+ org.ubimix.server.encoding;version="1.3.0",
+ org.ubimix.server.mime;version="1.3.0"
 Import-Package: eu.medsea.mimeutil;resolution:=optional,
  eu.medsea.mimeutil.detector;resolution:=optional,
  eu.medsea.mimeutil.handler;resolution:=optional,
@@ -27,7 +26,6 @@ Import-Package: eu.medsea.mimeutil;resolution:=optional,
  javax.imageio;resolution:=optional,
  javax.imageio.stream;resolution:=optional,
  javax.xml.namespace;resolution:=optional,
- org.htmlcleaner;version="2.2.0";resolution:=optional,
  org.ubimix.commons.adapters;version="1.2.1",
  org.ubimix.commons.digests;version="1.2.1",
  org.ubimix.commons.io;version="1.2.1",
@@ -41,5 +39,4 @@ Import-Package: eu.medsea.mimeutil;resolution:=optional,
  org.ubimix.commons.uri.path;version="1.2.1",
  org.ubimix.commons.xml;version="1.2.1",
  org.ubimix.model;version="0.1.4",
- org.ubimix.model.xml;version="0.1.4",
- org.w3c.dom;resolution:=optional
+ org.ubimix.model.xml;version="0.1.4"
