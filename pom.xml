@@ -31,20 +31,9 @@
         </dependency>
         <dependency>
             <groupId>org.ubimix.commons</groupId>
-            <artifactId>org.ubimix.commons.xml</artifactId>
-            <version>1.2.1</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.ubimix.commons</groupId>
             <artifactId>org.ubimix.commons.utils</artifactId>
             <version>1.2.1</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.ubimix.libs</groupId>
-            <artifactId>org.ubimix.libs.htmlcleaner</artifactId>
-            <version>2.2.0</version>
         </dependency>
         <dependency>
             <groupId>eu.medsea.mimeutil</groupId>
